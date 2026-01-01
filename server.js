@@ -2,8 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
+import { initializePrisma } from './prisma-init.js';
 
 dotenv.config();
+
+// Initialize Prisma client
+await initializePrisma();
 
 const app = express();
 
