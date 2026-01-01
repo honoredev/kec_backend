@@ -1,0 +1,1 @@
+ALTER TABLE public.fun_content ADD COLUMN images text NULL;
