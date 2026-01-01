@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: kec-backend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kec-database
+          property: connectionString
+      - key: DIRECT_URL
+        fromDatabase:
+          name: kec-database
+          property: connectionString
