@@ -15,7 +15,7 @@ const app = express();
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://kec-ge1c.onrender.com'] // Your frontend domain
-    : ['http://localhost:3000', 'http://localhost:8080'], // Local development
+    : ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:5173'], // Local development
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -61,5 +61,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`KEC Backend running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`CORS enabled for: ${corsOptions.origin}`);
+  console.log(`CORS enabled for: ${JSON.stringify(corsOptions.origin)}`);
 });
