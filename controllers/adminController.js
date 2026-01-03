@@ -110,14 +110,14 @@ export const createInitialAdmin = async () => {
     
     // Check if admin already exists
     const existingAdmin = await prisma.user.findUnique({
-      where: { email: 'admin@kec.com' }
+      where: { email: 'ikarita@media.com' }
     });
 
     if (existingAdmin) {
       // Update existing admin with proper bcrypt hash
       const hashedPassword = await bcrypt.hash(adminPassword, SALT_ROUNDS);
       await prisma.user.update({
-        where: { email: 'admin@kec.com' },
+        where: { email: 'ikarita@media.com' },
         data: {
           passwordHash: hashedPassword,
           name: 'KEC Administrator',
@@ -133,14 +133,14 @@ export const createInitialAdmin = async () => {
     await prisma.user.create({
       data: {
         name: 'KEC Administrator',
-        email: 'admin@kec.com',
+        email: 'ikarita@media.com',
         passwordHash: hashedPassword,
         role: 'admin'
       }
     });
 
     console.log('✅ Admin account created successfully');
-    console.log('📧 Email: admin@kec.com');
+    console.log('📧 Email: ikarita@media.com');
     console.log('🔑 Password: Set from environment variable');
   } catch (error) {
     console.error('Error creating admin account:', error);
