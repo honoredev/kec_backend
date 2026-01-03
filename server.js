@@ -18,13 +18,19 @@ const app = express();
 // CORS configuration for production
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] // Replace with your actual frontend domain
-    : ['http://localhost:3000', 'http://localhost:5173'], // Local development
+    ? ['https://kec-ge1c.onrender.com','https://ikaritamedia.vercel.app'] // Your frontend domain
+    : ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:5173'], // Local development
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -55,7 +61,9 @@ app.use('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`KEC Backend running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`CORS enabled for: ${JSON.stringify(corsOptions.origin)}`);
 });
