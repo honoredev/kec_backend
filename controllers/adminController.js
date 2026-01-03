@@ -106,20 +106,30 @@ export const verifyToken = async (req, res) => {
 // Create initial admin account (run once)
 export const createInitialAdmin = async () => {
   try {
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    
     // Check if admin already exists
     const existingAdmin = await prisma.user.findUnique({
       where: { email: 'admin@kec.com' }
     });
 
     if (existingAdmin) {
-      console.log('Admin account already exists');
+      // Update existing admin with proper bcrypt hash
+      const hashedPassword = await bcrypt.hash(adminPassword, SALT_ROUNDS);
+      await prisma.user.update({
+        where: { email: 'admin@kec.com' },
+        data: {
+          passwordHash: hashedPassword,
+          name: 'KEC Administrator',
+          role: 'admin'
+        }
+      });
+      console.log('✅ Admin account updated with secure password');
       return;
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash('kec2025admin', SALT_ROUNDS);
-
-    // Create admin account
+    // Create new admin account
+    const hashedPassword = await bcrypt.hash(adminPassword, SALT_ROUNDS);
     await prisma.user.create({
       data: {
         name: 'KEC Administrator',
@@ -131,13 +141,88 @@ export const createInitialAdmin = async () => {
 
     console.log('✅ Admin account created successfully');
     console.log('📧 Email: admin@kec.com');
-    console.log('🔑 Password: kec2025admin');
+    console.log('🔑 Password: Set from environment variable');
   } catch (error) {
     console.error('Error creating admin account:', error);
   }
 };
 
-// JWT Authentication Middleware
+// Admin Signup (only works if no admin exists)
+export const adminSignup = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email and password are required' });
+    }
+
+    // Check if any admin already exists
+    const existingAdmin = await prisma.user.findFirst({
+      where: { role: 'admin' }
+    });
+
+    if (existingAdmin) {
+      return res.status(403).json({ message: 'Admin account already exists. Signup disabled.' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    // Create admin account
+    const admin = await prisma.user.create({
+      data: {
+        name,
+        email,
+        passwordHash: hashedPassword,
+        role: 'admin'
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true
+      }
+    });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        adminId: admin.id, 
+        email: admin.email,
+        role: admin.role
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      success: true,
+      token,
+      admin
+    });
+
+  } catch (error) {
+    console.error('Admin signup error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Check if signup is available
+export const checkSignupAvailability = async (req, res) => {
+  try {
+    const existingAdmin = await prisma.user.findFirst({
+      where: { role: 'admin' }
+    });
+
+    res.json({
+      canSignup: !existingAdmin
+    });
+
+  } catch (error) {
+    console.error('Check signup error:', error);
+    res.status(500).json({ canSignup: false });
+  }
+};
 export const authenticateAdmin = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];

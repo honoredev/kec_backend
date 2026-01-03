@@ -7,7 +7,7 @@ import { getAllLiveMatches, getActiveLiveMatch, createLiveMatch, updateLiveMatch
 import { getFunContent, getFunById, createFun, updateFun, deleteFun, likeFun } from '../controllers/funController.js';
 import { getFinancialData, getFinancialById, createFinancial, updateFinancial, deleteFinancial, incrementViews as incrementFinancialViews } from '../controllers/financialController.js';
 import { getActiveAudio } from '../controllers/audioController.js';
-import { adminLogin, verifyToken, authenticateAdmin } from '../controllers/adminController.js';
+import { adminLogin, verifyToken, authenticateAdmin, adminSignup, checkSignupAvailability } from '../controllers/adminController.js';
 
 const router = express.Router();
 const upload = multer({ 
@@ -32,6 +32,8 @@ const multipleUpload = multer({
 // Admin Authentication Routes
 router.post('/admin/login', adminLogin);
 router.get('/admin/verify', verifyToken);
+router.post('/admin/signup', adminSignup);
+router.get('/admin/check-signup', checkSignupAvailability);
 
 // Articles routes
 router.get('/articles', getArticles);
