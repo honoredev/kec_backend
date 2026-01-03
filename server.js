@@ -18,7 +18,7 @@ const app = express();
 // CORS configuration for production
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] // Replace with your actual frontend domain
+    ? ['https://kec-ge1c.onrender.com','https://ikaritamedia.vercel.app'] // Replace with your actual frontend domain
     : ['http://localhost:3000', 'http://localhost:5173'], // Local development
   credentials: true,
   optionsSuccessStatus: 200
