@@ -3,11 +3,15 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import { initializePrisma } from './prisma-init.js';
+import { createInitialAdmin } from './controllers/adminController.js';
 
 dotenv.config();
 
 // Initialize Prisma client
 await initializePrisma();
+
+// Create initial admin account
+await createInitialAdmin();
 
 const app = express();
 
