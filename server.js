@@ -16,6 +16,13 @@ import {
   getComments,
   createComment
 } from './controllers/articlesController.js';
+import {
+  getBets,
+  getBetById,
+  createBet,
+  voteBet,
+  deleteBet
+} from './controllers/betsController.js';
 
 dotenv.config();
 
@@ -91,6 +98,13 @@ app.delete('/api/audios/:id', (req, res) => res.json({ message: 'Audio deleted' 
 app.get('/api/fun', (req, res) => res.json({ funContent: [] }));
 app.post('/api/fun', (req, res) => res.json({ id: Date.now(), ...req.body }));
 app.delete('/api/fun/:id', (req, res) => res.json({ message: 'Fun content deleted' }));
+
+// Bets routes
+app.get('/api/bets', getBets);
+app.get('/api/bets/:id', getBetById);
+app.post('/api/bets', createBet);
+app.post('/api/bets/:id/vote', voteBet);
+app.delete('/api/bets/:id', deleteBet);
 
 // Financial Data
 app.get('/api/financial', (req, res) => res.json({ financialData: [] }));
