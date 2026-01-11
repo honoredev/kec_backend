@@ -41,7 +41,8 @@ const corsOptions = {
     : ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:5173'], // Local development
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'X-Request-Id'],
   optionsSuccessStatus: 200
 };
 
